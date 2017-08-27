@@ -34,7 +34,7 @@ public class Name {
         return diff;
     }
 
-    public String initials(Name name) {
+    public static String initials(Name name) {
         return name.lastName.charAt(0) + "." + name.firstName.charAt(0) + ".";
     }
 
