@@ -1,18 +1,22 @@
 package my.company;
 
 public class Name {
-    public final String firstName;
-    public final String lastName;
+    private final String firstName;
+    private final String lastName;
+
+    private final Integer salary;
 
     public Name() {
         super();
         firstName = null;
         lastName = null;
+        salary = null;
     }
 
-    public Name(String first, String last) {
-        firstName = first;
-        lastName = last;
+    public Name(String first, String last, Integer salary) {
+        this.firstName = first;
+        this.lastName = last;
+        this.salary = salary;
     }
 
     //  необходимо только для связанного в цепочку компаратора (chained comparator)
@@ -34,6 +38,14 @@ public class Name {
         return diff;
     }
 
+    public static int compareTo2(Name n1, Name n2) {
+        int diff = n1.lastName.compareTo(n2.lastName);
+        if (diff == 0) {
+            diff = n1.firstName.compareTo(n2.firstName);
+        }
+        return diff;
+    }
+
     public static String initials(Name name) {
         return name.lastName.charAt(0) + "." + name.firstName.charAt(0) + ".";
     }
@@ -43,4 +55,8 @@ public class Name {
         return lastName + " " + firstName;
     }
     //...
+    public Integer getSalary() {
+        return salary;
+    }
+
 }

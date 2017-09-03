@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -12,11 +13,11 @@ import java.util.function.UnaryOperator;
 public class Main {
 
     private static final Name[] NAMES = new Name[]{
-            new Name("Smith", "Sally"),
-            new Name("Mith", "Gally"),
-            new Name("Pith", "Bally"),
-            new Name("Tith", "Aally"),
-            new Name("Pith", "Sally"),
+            new Name("Smith", "Sally", 100),
+            new Name("Mith", "Gally", 120),
+            new Name("Pith", "Bally", 150),
+            new Name("Tith", "Aally", 125),
+            new Name("Pith", "Sally", 160),
     };
 
     /**
@@ -35,6 +36,11 @@ public class Main {
         names.forEach(name -> System.out.println(name.toString()));
     }
 
+
+    public static int compareName(Name n1, Name n2, Comparator<Name> cmp) {
+        return cmp.compare(n1, n2);
+    }
+
     public static void main(String[] args) {
         Name[] copy = Arrays.copyOf(NAMES, NAMES.length);
         //printNames("----- Исходный список ------", copy);
@@ -44,15 +50,16 @@ public class Main {
         //Arrays.sort(copy, (a, b) -> a.compareTo(b));
         printNames("----- Сортированный список ------", names);
         //
-        Predicate<Name> p1 = n -> "Aally".equals(n.lastName);
+        Predicate<Name> p1 = n -> "Aally".equals(n.getLastName());
         UnaryOperator<Name> uo = n -> {
-            return new Name(n.firstName.toUpperCase(), n.lastName.toUpperCase());
+            return new Name(n.getFirstName().toUpperCase(), n.getLastName().toUpperCase(), 0);
         };
         UpperName<Name, String> myUo = n -> {
-            return n.firstName.toUpperCase() + " " + n.lastName.toUpperCase();
+            return n.getFirstName().toUpperCase() + " " + n.getLastName().toUpperCase();
         };
+        System.out.println("FunctionalInterface: " + myUo.upper(names.get(0)));
         //
-        Comparator<Name> cmp2 = (c1, c2) -> c1.lastName.compareTo(c2.lastName);
+        Comparator<Name> cmp2 = (c1, c2) -> c1.getLastName().compareTo(c2.getLastName());
         System.out.println(cmp2.compare(NAMES[0], NAMES[4]) == 0 ? "n[0]==n[4]" : "n[0]<>n[4]");
         //
         Number num = null;
@@ -64,13 +71,13 @@ public class Main {
             if (p1.test(name)) {
                 System.out.println("Predicate ok: " + name);
                 System.out.println("UnaryOperator ok: " + uo.apply(name));
-                System.out.println("myUnaryOperator ok: " + myUo.upper(name));
-                System.out.println("myUnaryOperator2 ok: " + myUo2.upper(name));
+                System.out.println("FunctionalInterface myUnaryOperator ok: " + myUo.upper(name));
+                System.out.println("FunctionalInterface myUnaryOperator2 ok: " + myUo2.upper(name));
             }
         });
         //
         System.out.println("========== Stream test ===============");
-        names.stream().filter(s -> s.lastName.startsWith("S"))
+        names.stream().filter(s -> s.getLastName().startsWith("S"))
                 .forEach(n -> System.out.println(n));
         //
         System.out.println("========== Predicat test ===============");
@@ -86,7 +93,20 @@ public class Main {
         System.out.println("========== Map test 2 ===============");
         names.stream().map(Name::initials)
                 .forEach(n -> System.out.println(n));
+        // count
+        System.out.println(
+                "count startWith S=" + names.stream().filter(f -> f.getLastName().startsWith("S")).count()
+        );
+        System.out.println(
+                "sum startWith(\"S\")=" + names.stream().filter(f -> f.getLastName().startsWith("S")).mapToInt(Name::getSalary).sum()
+        );
 
+        System.out.println(
+                names.get(0).toString() + " " +
+                        (compareName(names.get(0), names.get(1), Name::compareTo2) == 1 ? ">" : "<") + " " +
+                        names.get(1).toString()
+
+        );
 
     }
 }
