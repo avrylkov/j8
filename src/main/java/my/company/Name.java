@@ -1,5 +1,6 @@
 package my.company;
 
+// name class
 public class Name {
     private final String firstName;
     private final String lastName;
