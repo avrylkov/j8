@@ -52,7 +52,7 @@ public class Name {
 
     @Override
     public String toString() {
-        return lastName + " " + firstName;
+        return String.format("%s %s salary=%s", lastName, firstName, salary);
     }
     //...
     public Integer getSalary() {

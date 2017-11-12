@@ -8,6 +8,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
 
 public class Main {
@@ -40,6 +41,11 @@ public class Main {
     public static int compareName(Name n1, Name n2, Comparator<Name> cmp) {
         return cmp.compare(n1, n2);
     }
+
+    public static List<Name> findName(List<Name> names, Predicate<Name> predicate) {
+        return names.stream().filter(predicate).collect(Collectors.toList());
+    }
+
 
     public static void main(String[] args) {
         Name[] copy = Arrays.copyOf(NAMES, NAMES.length);
@@ -101,12 +107,20 @@ public class Main {
                 "sum startWith(\"S\")=" + names.stream().filter(f -> f.getLastName().startsWith("S")).mapToInt(Name::getSalary).sum()
         );
 
+        //names.sort((n1,n2)-> n1.compareTo(n2));
+        compareName(names.get(0), names.get(1), (n1, n2) -> n1.compareTo(n2));
         System.out.println(
                 names.get(0).toString() + " " +
                         (compareName(names.get(0), names.get(1), Name::compareTo2) == 1 ? ">" : "<") + " " +
                         names.get(1).toString()
 
         );
+        //
+        List<Name> list = findName(names, n -> n.getSalary() == 150);
+        System.out.println("find Name for salary=150 :" + Arrays.toString(list.toArray()));
+        //
+        list = findName(names, n -> n.getLastName() == "Sally");
+        System.out.println("find Name for lasnName Sally:" + Arrays.toString(list.toArray()));
 
     }
 }
